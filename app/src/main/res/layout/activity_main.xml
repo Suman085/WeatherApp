@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="0dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="com.example.suman.weatherapp.MainActivity"
+                android:background="@drawable/back_ground">
+
+    <TextView
+        tools:text="--"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#FFFFFF"
+        android:id="@+id/tempTextView"
+        android:gravity="center_horizontal"
+        android:textSize="150sp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/degree"
+        android:layout_marginTop="50dp"
+        android:layout_alignTop="@+id/tempTextView"
+        android:layout_toRightOf="@+id/tempTextView"
+        android:layout_toEndOf="@+id/tempTextView"
+        android:id="@+id/degreeimageView"/>
+
+    <TextView
+        tools:text="At 6:30 am it will be"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tempTextView"
+        android:layout_centerHorizontal="true"
+        android:textColor="#80FFFFFF"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:id="@+id/timeLabel"/>
+
+    <TextView
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_above="@+id/timeLabel"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/locationLabel"
+        android:text="Getting Data."/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/clear_night"
+        android:id="@+id/iconImageView"
+
+        android:layout_alignBottom="@+id/locationLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></ImageView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:id="@+id/linearLayout"
+        android:weightSum="100"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tempTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_weight="50"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:inputType="textPersonName"
+                android:text="HUMIDITY"
+                android:textSize="24sp"
+                android:textColor="#80FFFFFF"
+                android:id="@+id/humidityLabel"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:layout_gravity="center_horizontal"
+                android:text="--"
+                android:textColor="#FFFFFFFF"
+                android:textSize="24sp"
+                android:id="@+id/humidityValue"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_weight="50"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Rain/Snow"
+                android:layout_gravity="center_horizontal"
+                android:textSize="24sp"
+                android:textColor="#80FFFFFF"
+                android:id="@+id/precipLabel"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="--"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#FFFFFFFF"
+                android:textSize="24sp"
+                android:id="@+id/precipValue"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/summaryLabel"
+        android:text="Current Weather Loading"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/refresh"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/refreshButton"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/locationLabel"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/refreshButton"
+        android:id="@+id/progressBar"/>
+
+    <Button
+        android:text=" 7 Day"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="#40FFFFFF"
+        android:id="@+id/daily_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+    <Button
+        android:text="Hourly"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="#40FFFFFF"
+        android:id="@+id/hourly_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+</RelativeLayout>
