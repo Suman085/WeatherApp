@@ -2,6 +2,7 @@ package com.example.suman.weatherapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -61,34 +62,23 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mGPSTracker = new GPSTracker(MainActivity.this);
         mProgressBar.setVisibility(View.INVISIBLE);
-        getLocation(mGPSTracker);
+        if (mGPSTracker.canGetLocation()) {
+            Toast.makeText(getApplicationContext(), "Latitude: " + mGPSTracker.getLatitude() + " // Longitude: " + mGPSTracker.getLongitude(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Unable to get location. :(", Toast.LENGTH_LONG).show();
+        }
         //final double latitude=27.7172;
         //final double longitude=85.3240;
 
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLocation(mGPSTracker);
+                getForecast(mGPSTracker.getLatitude(),mGPSTracker.getLongitude());
             }
         });
 
-        getLocation(mGPSTracker);
+        getForecast(mGPSTracker.getLatitude(),mGPSTracker.getLongitude());
     }
-
-    private void getLocation(GPSTracker GPSTracker) {
-        double lattitude;
-        double longitude;
-        if (GPSTracker.canGetLocation()) {
-           lattitude=GPSTracker.getLatitude();
-           longitude=GPSTracker.getLongitude();
-            getForecast(lattitude,longitude);
-        } else {
-            Toast.makeText(getApplicationContext(), "Unable to get location. :(", Toast.LENGTH_LONG).show();
-        }
-
-
-    }
-
 
     private void getForecast(double latitude,double longitude) {
         String apiKey="776177a499a6b2b49f8f057572df3a21";
