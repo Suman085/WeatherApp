@@ -1,4 +1,4 @@
-package com.example.suman.weatherapp;
+package com.example.suman.weatherapp.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

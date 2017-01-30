@@ -14,6 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.suman.weatherapp.model.Current;
+import com.example.suman.weatherapp.model.Day;
+import com.example.suman.weatherapp.model.Forecast;
+import com.example.suman.weatherapp.model.Hour;
+import com.example.suman.weatherapp.service.GPSTracker;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,8 +38,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG=MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST="DAILY FORECAST";
-    public static final String LOCATION_NAME="LOCATION NAME";
     public static final String HOURLY_FORECAST="HOURLY_FORECAST";
+    GPSTracker mGPSTracker;
     private Forecast mForecast;
     @BindView(R.id.iconImageView) ImageView mIconImageView;
     @BindView(R.id.locationLabel) TextView mLocationLabel;
@@ -53,19 +59,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mGPSTracker = new GPSTracker(MainActivity.this);
         mProgressBar.setVisibility(View.INVISIBLE);
-        final double latitude=27.7172;
-        final double longitude=85.3240;
+        getLocation(mGPSTracker);
+        //final double latitude=27.7172;
+        //final double longitude=85.3240;
 
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getForecast(latitude,longitude);
+                getLocation(mGPSTracker);
             }
         });
 
-        getForecast(latitude,longitude);
+        getLocation(mGPSTracker);
     }
+
+    private void getLocation(GPSTracker GPSTracker) {
+        double lattitude;
+        double longitude;
+        if (GPSTracker.canGetLocation()) {
+           lattitude=GPSTracker.getLatitude();
+           longitude=GPSTracker.getLongitude();
+            getForecast(lattitude,longitude);
+        } else {
+            Toast.makeText(getApplicationContext(), "Unable to get location. :(", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
 
     private void getForecast(double latitude,double longitude) {
         String apiKey="776177a499a6b2b49f8f057572df3a21";
@@ -128,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         {
             AlertDialogFragment alertDialogFragment=new AlertDialogFragment();
             alertDialogFragment.show(getFragmentManager(),"Network unavailable");
-            Toast.makeText(this,"Network unavalable",Toast.LENGTH_LONG);
+            Toast.makeText(this,"Network Unavailable",Toast.LENGTH_LONG);
         }
     }
 
@@ -236,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.daily_button)
     public void startDailyActivity(View view){
         Intent intent=new Intent(this,DailyForecastActivity.class);
-        //intent.putExtra(LOCATION_NAME,);
         intent.putExtra(DAILY_FORECAST,mForecast.getDailyForecast());
         startActivity(intent);
     }

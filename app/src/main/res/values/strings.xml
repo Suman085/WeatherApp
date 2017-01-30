@@ -3,4 +3,5 @@
     <string name="error_title">opsss!!</string>
     <string name="error_message">there was an error</string>
     <string name="error_okbutton">Ok</string>
+    <string name="title_splash">splash_screen</string>
 </resources>

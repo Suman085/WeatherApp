@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import com.example.suman.weatherapp.model.Forecast;
+import com.example.suman.weatherapp.model.Hour;
+
 import java.util.Arrays;
 
 import butterknife.BindView;

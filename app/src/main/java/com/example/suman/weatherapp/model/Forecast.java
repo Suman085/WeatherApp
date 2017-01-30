@@ -1,4 +1,6 @@
-package com.example.suman.weatherapp;
+package com.example.suman.weatherapp.model;
+
+import com.example.suman.weatherapp.R;
 
 /**
  * Created by Suman on 1/11/2017.

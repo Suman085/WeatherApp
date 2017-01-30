@@ -15,6 +15,16 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/textLabel"
         android:id="@+id/hour_list"/>
+
+    <TextView
+        android:text="48 Hours Weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:layout_marginBottom="17dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/textLabel"/>
 </RelativeLayout>

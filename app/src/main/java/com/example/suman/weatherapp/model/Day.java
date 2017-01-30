@@ -1,4 +1,4 @@
-package com.example.suman.weatherapp;
+package com.example.suman.weatherapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -96,7 +96,5 @@ public class Day implements Parcelable{
             return new Day[size];
         }
     };
-    {
 
-    }
 }
