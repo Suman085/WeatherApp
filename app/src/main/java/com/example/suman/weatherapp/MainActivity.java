@@ -2,9 +2,13 @@ package com.example.suman.weatherapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +23,12 @@ import com.example.suman.weatherapp.model.Current;
 import com.example.suman.weatherapp.model.Day;
 import com.example.suman.weatherapp.model.Forecast;
 import com.example.suman.weatherapp.model.Hour;
-import com.example.suman.weatherapp.service.GPSTracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +45,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,LocationListener, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG=MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST="DAILY FORECAST";
     public static final String HOURLY_FORECAST="HOURLY_FORECAST";
-    GPSTracker mGPSTracker;
+    public static final String PLACE_NAME = "PLACE_NAME";
     private Forecast mForecast;
+    private String timezone;
+    private LatLng location2;
     @BindView(R.id.iconImageView) ImageView mIconImageView;
     @BindView(R.id.locationLabel) TextView mLocationLabel;
     @BindView(R.id.timeLabel) TextView mTimeLabel;
@@ -55,32 +66,46 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.progressBar)ProgressBar mProgressBar;
     @BindView(R.id.hourly_button)Button mHourlyButton;
     @BindView(R.id.daily_button)Button mDailyButton;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mGPSTracker = new GPSTracker(MainActivity.this);
-        mProgressBar.setVisibility(View.INVISIBLE);
-        if (mGPSTracker.canGetLocation()) {
-            Toast.makeText(getApplicationContext(), "Latitude: " + mGPSTracker.getLatitude() + " // Longitude: " + mGPSTracker.getLongitude(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Unable to get location. :(", Toast.LENGTH_LONG).show();
+        mGoogleApiClient=new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mLocationRequest=new LocationRequest()
+                .setInterval(15*1000)
+                .setFastestInterval(5*1000)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if(mGoogleApiClient!=null){
+            mGoogleApiClient.connect();
+            Log.e(TAG,"Hlelo world");
         }
-        //final double latitude=27.7172;
-        //final double longitude=85.3240;
 
+        mProgressBar.setVisibility(View.INVISIBLE);
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getForecast(mGPSTracker.getLatitude(),mGPSTracker.getLongitude());
+                getForecast(location2.latitude,location2.longitude);
             }
         });
 
-        getForecast(mGPSTracker.getLatitude(),mGPSTracker.getLongitude());
     }
 
-    private void getForecast(double latitude,double longitude) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mGoogleApiClient!=null){
+        mGoogleApiClient.connect();
+    }
+    }
+
+    private void getForecast(double latitude, double longitude) {
         String apiKey="776177a499a6b2b49f8f057572df3a21";
         String forecastUrl="https://api.darksky.net/forecast/"+apiKey+"/"+latitude+","+longitude;
 
@@ -154,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast=new JSONObject(jsonData);
-        String timezone=forecast.getString("timezone");
+         timezone=forecast.getString("timezone");
         JSONObject currently=forecast.getJSONObject("currently");
         Current current =new Current();
         current.setHumidity(currently.getDouble("humidity"));
@@ -250,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
     public void startDailyActivity(View view){
         Intent intent=new Intent(this,DailyForecastActivity.class);
         intent.putExtra(DAILY_FORECAST,mForecast.getDailyForecast());
+        intent.putExtra(PLACE_NAME,timezone);
         startActivity(intent);
     }
 
@@ -259,4 +285,41 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(HOURLY_FORECAST,mForecast.getHourlyForecast());
         startActivity(intent);
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        requestLocationUpdates();
+    }
+    private void requestLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,this);
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        getForecast(location.getLatitude(),location.getLongitude());
+        location2=new LatLng(location.getLatitude(),location.getLongitude());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    if(mGoogleApiClient.isConnected()){
+        mGoogleApiClient.disconnect();
+    }
+    }
+
 }

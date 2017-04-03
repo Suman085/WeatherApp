@@ -21,18 +21,21 @@ public class DailyForecastActivity extends AppCompatActivity {
     private Day[] mDays;
     @BindView(android.R.id.list)ListView dailyListView;
     @BindView(android.R.id.empty) TextView emptyTextView;
+    @BindView(R.id.locationLabel) TextView locationLabel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_forecast);
         ButterKnife.bind(this);
         Intent intent=getIntent();
+        String placeName=intent.getStringExtra(MainActivity.PLACE_NAME);
         //String locationName=intent.getStringExtra(MainActivity.LOCATION_NAME);
         Parcelable[] parcelables=intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST);
         mDays= Arrays.copyOf(parcelables,parcelables.length,Day[].class);
         DayAdapter adapter=new DayAdapter(this,mDays);
         dailyListView.setAdapter(adapter);
         dailyListView.setEmptyView(emptyTextView);
+        locationLabel.setText(placeName);
         dailyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

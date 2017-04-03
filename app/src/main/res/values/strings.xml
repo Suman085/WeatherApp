@@ -4,4 +4,6 @@
     <string name="error_message">there was an error</string>
     <string name="error_okbutton">Ok</string>
     <string name="title_splash">splash_screen</string>
+   
+    <string name="google_api_key">AIzaSyC0kvVB3eoGaHh6rfR2HptN_4k2AoIn34M</string>
 </resources>
